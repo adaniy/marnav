@@ -59,7 +59,7 @@ void aam::append_data_to(std::string & s) const
 {
 	append(s, to_string(arrival_circle_entered_));
 	append(s, to_string(perpendicualar_passed_));
-	append(s, to_string(arrival_circle_radius_.value())); // TODO: to_string(const basic_unit &) ??
+	append(s, to_string(arrival_circle_radius_.value()));
 	append(s, to_string(unit::distance::nm));
 	append(s, to_string(waypoint_id_));
 }

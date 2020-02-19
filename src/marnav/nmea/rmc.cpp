@@ -23,13 +23,15 @@ rmc::rmc(talker talk, fields::const_iterator first, fields::const_iterator last)
 	if ((size < 11) || (size > 12))
 		throw std::invalid_argument{"invalid number of fields in rmc"};
 
+	utils::optional<double> sog;
+
 	read(*(first + 0), time_utc_);
 	read(*(first + 1), status_);
 	read(*(first + 2), lat_);
 	read(*(first + 3), lat_hem_);
 	read(*(first + 4), lon_);
 	read(*(first + 5), lon_hem_);
-	read(*(first + 6), sog_);
+	read(*(first + 6), sog);
 	read(*(first + 7), heading_);
 	read(*(first + 8), date_);
 	read(*(first + 9), mag_);
@@ -42,6 +44,9 @@ rmc::rmc(talker talk, fields::const_iterator first, fields::const_iterator last)
 	// instead of reading data into temporary lat/lon, let's correct values afterwards
 	lat_ = correct_hemisphere(lat_, lat_hem_);
 	lon_ = correct_hemisphere(lon_, lon_hem_);
+
+	if (sog)
+		sog_ = units::knots{*sog};
 }
 
 utils::optional<geo::longitude> rmc::get_lon() const
@@ -71,6 +76,20 @@ void rmc::set_mag(double t, direction h)
 	check_value(h, {direction::east, direction::west}, "mag var hemisphere");
 	mag_ = t;
 	mag_hem_ = h;
+}
+
+utils::optional<units::velocity> rmc::get_sog() const
+{
+	if (!sog_)
+		return {};
+	return {*sog_};
+}
+
+void rmc::set_sog(units::velocity t)
+{
+	if (t.value() < 0.0)
+		throw std::invalid_argument{"invalid argument, SOG less than zero"};
+	sog_ = t.get<units::knots>();
 }
 
 void rmc::append_data_to(std::string & s) const

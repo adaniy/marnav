@@ -621,16 +621,21 @@ static std::string render(const std::vector<uint8_t> & t)
 	return s;
 }
 
+static std::string render(const marnav::units::nautical_miles & t)
+{
+	return fmt::sprintf("%s %s", render(t.value()), render(marnav::nmea::unit::distance::nm));
+}
+
+static std::string render(const marnav::units::knots & t)
+{
+	return fmt::sprintf("%s %s", render(t.value()), render(marnav::nmea::unit::velocity::knot));
+}
+
 template <typename T> static std::string render(const marnav::utils::optional<T> & t)
 {
 	if (!t)
 		return "-";
 	return render(*t);
-}
-
-static std::string render(const marnav::units::nautical_miles & t)
-{
-	return fmt::sprintf("%s %s", render(t.value()), render(marnav::nmea::unit::distance::nm));
 }
 
 static void print(const std::string & name, const std::string & value)
@@ -1093,7 +1098,8 @@ static void print_detail_aam(const marnav::nmea::sentence * s)
 	const auto t = marnav::nmea::sentence_cast<marnav::nmea::aam>(s);
 	print("Arrival Circle Entred", render(t->get_arrival_circle_entered()));
 	print("Perpendicular Passed", render(t->get_perpendicualar_passed()));
-	print("Arrival Circle Radius", render(t->get_arrival_circle_radius().get<marnav::units::nautical_miles>()));
+	print("Arrival Circle Radius",
+		render(t->get_arrival_circle_radius().get<marnav::units::nautical_miles>()));
 	print("Waypoint", render(t->get_waypoint_id()));
 }
 
