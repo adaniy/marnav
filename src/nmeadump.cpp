@@ -631,6 +631,16 @@ static std::string render(const marnav::units::knots & t)
 	return fmt::sprintf("%s %s", render(t.value()), render(marnav::nmea::unit::velocity::knot));
 }
 
+static std::string render(const marnav::units::length & t)
+{
+	return fmt::sprintf("%s %s", render(t.value()), render(marnav::nmea::unit::distance::meter));
+}
+
+static std::string render(const marnav::units::velocity & t)
+{
+	return fmt::sprintf("%s %s", render(t.value()), render(marnav::nmea::unit::velocity::mps));
+}
+
 template <typename T> static std::string render(const marnav::utils::optional<T> & t)
 {
 	if (!t)

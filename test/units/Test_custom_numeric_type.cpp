@@ -112,7 +112,7 @@ template <class U> constexpr basic_number<U> round(const basic_number<U> & n) no
 
 template <class U> constexpr basic_number<U> abs(const basic_number<U> & n) noexcept
 {
-	return basic_number<U>(::abs(n.value_));
+	return basic_number<U>(std::abs(n.value_));
 }
 
 template <class U>
